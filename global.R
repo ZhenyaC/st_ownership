@@ -14,7 +14,12 @@ across$Date<-as.Date(across$Date, "%d-%b-%Y")
 
 across_pivoted<-across%>%pivot_longer(cols = -Date, names_to = "rating", values_to = "value")
 
-min_year <-min(format(as.Date(across$Date, format="%d/%m/%Y"), "%Y"))
+#Jan 8: min_year and max_year do not work on UI side
+#min_year <-min(format(as.Date(across$Date, format="%d-%m-%Y"), "%Y"))
 
-max_year <-max(format(as.Date(across$Date, format="%d/%m/%Y"), "%Y"))
+#max_year <-max(format(as.Date(across$Date, format="%d-%m-%Y"), "%Y"))
+
+min_year<-min(year(across$Date))
+
+max_year<-max(year(across$Date))
 

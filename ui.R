@@ -20,9 +20,10 @@ shinyUI(fluidPage(
         sidebarPanel(
             sliderInput("years",
                         "Select a range of years:",
-                        min = 1,
-                        max = 30,
-                        value = c(1,30)), 
+                        min = min_year,
+                        max = max_year,
+                        value = c(min_year, max_year),
+                        sep = ""), 
             
             #selectInput("rating", "Choose Rating", choices = c("AAA", "AA", "A", "BBB", "B", "CCC", "AVG IG", "AVG HY"))
             #selectInput("choice", "Choose Rating", choices = names(across))

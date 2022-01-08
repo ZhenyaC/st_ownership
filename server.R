@@ -16,6 +16,7 @@ shinyServer(function(input, output) {
   across_filtered<-reactive({
     across_pivoted%>% 
       filter(rating %in% input$rating)
+   
   })
   
   output$linePlot <- renderPlot({
@@ -24,6 +25,9 @@ shinyServer(function(input, output) {
     # across%>%select(input$choice)%>%ggplot(aes(x=Date, y= input$choice)) + geom_line()
     
     across_filtered()%>%
+      #Jan8: filtering between input years do not work
+      filter(between(year(Date), input$years[1], input$years[2]))%>%
+     # mutate(Date=format(Date, "%d-%m-%Y"))%>%
       ggplot(aes(x=Date, y= value, color=rating)) + geom_line()
     
   })
@@ -34,7 +38,7 @@ shinyServer(function(input, output) {
       
       #across%>%filter(Date >="2021-01-10")%>%mutate(Date=format(Date, "%d-%m-%Y"))%>%view()
       
-        across %>% filter(Date >= "2020-02-10")%>%mutate(Date=format(Date, "%d-%m-%Y"))
+        across %>% filter(Date >= "2021-11-10")%>%mutate(Date=format(Date, "%d-%m-%Y"))
       # across %>% subset(Date >= as.Date("01-01-2021"))
        # across$Date<-as.character(across$Date)
         #across[ , input$choice]
