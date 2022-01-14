@@ -31,6 +31,15 @@ shinyServer(function(input, output) {
       ggplot(aes(x=Date, y= value, color=rating)) + geom_line()
     
   })
+  
+  
+  output$barPlot <- renderPlot({
+    ig_industry%>%
+      filter(Date %in% as.Date(c("2021-10-21", "2020-03-23", "2019-12-04")))%>%mutate(Date=format(Date, "%d-%m-%Y")) %>%
+      pivot_longer(cols = -Date, names_to = "industry", values_to = "value")%>%
+      mutate(value=as.numeric(value))%>%
+      ggplot(aes(x= industry, y= value, fill=Date)) + geom_bar(stat="identity", position = "dodge") + ylab("bps") + coord_flip()
+  })
     
      ## Table
     

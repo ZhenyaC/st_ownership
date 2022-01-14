@@ -47,8 +47,8 @@ shinyUI(fluidPage(
                       plotOutput("linePlot"),
                       tableOutput("table")
                       ),
-             tabPanel("IG Spreads By Industry"
-                      # plotOutput("linePlot"),
+             tabPanel("IG Spreads By Industry",
+                       plotOutput("barPlot")
                       #tableOutput("table")
                      ),
              tabPanel("LATAM Spreads"
