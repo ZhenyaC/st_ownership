@@ -36,3 +36,30 @@ ig_industry%>%
   pivot_longer(cols = -Date, names_to = "industry", values_to = "value")%>%
   mutate(value=as.numeric(value))%>%
   ggplot(aes(x= industry, y= value, fill=Date)) + geom_bar(stat="identity", position = "dodge") + ylab("bps") + coord_flip()
+
+
+### For LATAM
+latam<-read_excel("data/Spreads_test.xls", sheet = 5, range = "D1:W7000")
+#colnames()
+head(latam)
+latam<-latam[-c(1:2),]
+names(latam)[1] <- "Date"
+head(latam)
+latam$Date<-as.Date(latam$Date, "%d-%b-%Y")
+colnames(latam)<-strsplit(colnames(latam), " \\(.*\\)")
+names(latam)<-names(latam)%>%make.names()
+head(latam)
+latam<-latam[-17:-20]
+#mutate_all(latam[-1], function(x) as.numeric(as.character(x)))
+head(latam)
+
+pct_ch_per_county<-latam%>% filter(Date %in% as.Date(c("2020-12-31", "2021-11-25")))%>% mutate(Date=format(Date, "%d-%m-%Y")) %>%
+  pivot_longer(cols = -Date, names_to = "country", values_to = "value")%>%
+  mutate(value=as.numeric(value))%>%pivot_wider(id_cols=country, names_from = Date, values_from = value)%>%
+  mutate(pct_ch=((`25-11-2021`-`31-12-2020`)/`31-12-2020`)*100)
+
+pct_ch_per_county
+
+pct_ch_per_county<-left_join(pct_ch_per_county, CODE, by=c("country"="COUNTRY"))
+
+CODE<- read_csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv")

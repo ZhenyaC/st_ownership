@@ -30,12 +30,23 @@ shinyUI(fluidPage(
             selectizeInput("rating", "Choose a Rating", choices = across%>%
                           pivot_longer(cols = -Date, names_to = "rating", values_to = "value")%>%
                           pull(rating), multiple = T
-            ) 
+            ),
             
-            #selectInput("rating", "Choose a Rating", choices = across%>%
-                       #   pivot_longer(cols = -Date, names_to = "rating", values_to = "value")%>%
-                        #  pull(rating)
-            #)
+
+            selectizeInput("industry", "Choose an Industry", choices = ig_industry%>%
+                            pivot_longer(cols = -Date, names_to = "industry", values_to = "value")%>%
+                            pull(industry)%>%
+                            unique() %>%
+                            sort(), multiple = T, selected="Automotive"),
+                 
+            
+            
+            selectizeInput("date", "Choose a Date", choices = across%>%
+                           pivot_longer(cols = -Date, names_to = "rating", values_to = "value")%>%
+                           pull(Date)%>%
+                           unique() %>%
+                            sort(),multiple = T, selected="2021-11-25"
+            )
         ),
         
       
@@ -51,8 +62,8 @@ shinyUI(fluidPage(
                        plotOutput("barPlot")
                       #tableOutput("table")
                      ),
-             tabPanel("LATAM Spreads"
-                      # plotOutput("linePlot"),
+             tabPanel("LATAM Spreads",
+                      plotlyOutput("mapPlot")
                       #tableOutput("table")
                      )
             

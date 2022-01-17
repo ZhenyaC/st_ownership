@@ -160,6 +160,9 @@ ig_industry%>%
   ggplot(aes(x=industry, y=value, fill=industry)) + geom_col()
 
 
+head(across)
+
+
 
 ##################################
 library(fmsb)
@@ -184,8 +187,57 @@ head(latam)
 latam<-latam[-17:-20]
 #mutate_all(latam[-1], function(x) as.numeric(as.character(x)))
 head(latam)
-latam%>% filter(Date %in% as.Date(c("2020-12-31", "2021-11-25")))%>% mutate(Date=format(Date, "%d-%m-%Y")) %>%
-  pivot_longer(cols = -Date, names_to = "country", values_to = "value")%>%
-  mutate(value=as.numeric(value))
+
+#df[ , chars] <- as.data.frame(apply(df[ , chars], 2, as.numeric))
+
+sapply(latam, is.character)
+
+
+
+latam[1,2] -latam[2,2]
+as.data.frame(apply(latam[ , chars], 2, as.numeric))
+
+
+
+#latam%>%summarise(sum(is.na(Date)))
+test2<-latam%>% filter(Date %in% as.Date(c("2020-12-31", "2021-11-25")))%>% 
+  mutate(Date=format(Date, "%d-%m-%Y"))
+test2
+write.csv(test2)
+write.csv(test2, file = "c:\\data\\test2.csv")
+
+#typeof(test2)
+#test2%>%
+#  sapply(test2[-1], function(x) as.numeric(as.character(x)))%>%view()
+
+
+#################################3
+test3<-test2%>%
+  select(-Date)%>%
+  mutate_if(is.character, as.numeric)
+
+test3%>% mutate((test3-test3)*100)
   
-latam%>%summarise(sum(is.na(Date)))
+
+(test3[1,] -test3[-1,])*100
+
+apply(test2[-1]), 
+
+##########################################
+  
+pct_ch_per_county<-latam%>% filter(Date %in% as.Date(c("2020-12-31", "2021-11-25")))%>% mutate(Date=format(Date, "%d-%m-%Y")) %>%
+    pivot_longer(cols = -Date, names_to = "country", values_to = "value")%>%
+    mutate(value=as.numeric(value))%>%pivot_wider(id_cols=country, names_from = Date, values_from = value)%>%
+    mutate(pct_ch=((`25-11-2021`-`31-12-2020`)/`31-12-2020`)*100)
+
+pct_ch_per_county
+
+pct_ch_per_county<-left_join(pct_ch_per_county, CODE, by=c("country"="COUNTRY"))
+  
+
+               ig_industry%>%
+                 select(as.Date(ig_industry$Date))%>%
+                 mutate(Date=format(Date, "%d-%m-%Y"))%>%
+                 pull(ig_industry$Date)%>%
+                 unique() %>%
+                 sort()

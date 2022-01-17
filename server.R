@@ -35,10 +35,37 @@ shinyServer(function(input, output) {
   
   output$barPlot <- renderPlot({
     ig_industry%>%
-      filter(Date %in% as.Date(c("2021-10-21", "2020-03-23", "2019-12-04")))%>%mutate(Date=format(Date, "%d-%m-%Y")) %>%
+      filter(Date %in% as.Date(input$date))%>%mutate(Date=format(Date, "%d-%m-%Y")) %>%
       pivot_longer(cols = -Date, names_to = "industry", values_to = "value")%>%
       mutate(value=as.numeric(value))%>%
+      filter(industry %in% input$industry)%>%
       ggplot(aes(x= industry, y= value, fill=Date)) + geom_bar(stat="identity", position = "dodge") + ylab("bps") + coord_flip()
+  })
+  
+  output$mapPlot <- renderPlotly({
+    
+    l <- list(color = toRGB("grey"), width = 0.5)
+    
+    g <-list(
+      scope = "south america",
+      visible = F,
+      showcountries = T,
+      countrycolor = toRGB("Purple"),
+      resolution = 50,
+      showland = TRUE,
+      landcolor = toRGB("#e5ecf6")
+      
+    )
+    fig <- plot_geo(pct_ch_per_county)
+    
+    fig <- fig %>% add_trace(
+      z = ~pct_ch, color = ~pct_ch, colors = 'Blues',
+      text = ~country, locations = ~CODE, marker = list(line = l)
+    )
+    
+    #fig <- plot_ly(type = 'scattergeo', mode = 'markers')
+    fig <- fig %>% layout(geo = g, title = "2021/2020 Spread Change (%)")
+    fig
   })
     
      ## Table
